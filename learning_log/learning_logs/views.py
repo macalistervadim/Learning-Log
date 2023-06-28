@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
@@ -24,7 +24,7 @@ def topics(request):
 @login_required
 def topic(request, topic_id):
     """Выводит одну тему и все ее записи"""
-    topic = Topic.objects.get(id=topic_id)
+    topic = get_object_or_404(id=topic_id)
     # Проверка того, что тема принадлежит текущему пользователю
     if check_user(request, topic) == False:
         raise Http404
@@ -55,7 +55,7 @@ def new_topic(request):
 @login_required
 def new_entry(request, topic_id):
     """Добавляет новую запись по конкретной теме"""
-    topic = Topic.objects.get(id=topic_id)
+    topic = get_object_or_404(id=topic_id)
     if request.method != 'POST':
         # Данные не отправились; создается пустая форма
         form = EntryForm()
@@ -79,7 +79,7 @@ def new_entry(request, topic_id):
 @login_required
 def edit_entry(request, entry_id):
     """Редактирует существующую запись"""
-    entry = Entry.objects.get(id=entry_id)
+    entry = get_object_or_404(id=entry_id)
     topic = entry.topic
     if check_user(request, topic) == False:
         raise Http404
